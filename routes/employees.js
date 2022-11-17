@@ -12,12 +12,24 @@ router.get("/", async (req, res) => {
   );
 });
 
+router.get("/:id", async (req, res) => {
+  const employees = await Employee.find(req.params).sort("id");
+  res.send(
+    employees.map((emp) => {
+      return _.pick(emp, ["id", "name", "Cin", "Cout"]);
+    })
+  );
+});
+
 router.post("/", async (req, res) => {
   const { erro } = validate(req.body);
   if (erro) return res.status(400).send(erro.details[0].message);
 
   let employee = await Employee.findOne({ id: req.body.id });
-  if (employee) return res.status(400).send("that id is exiested.");
+  if (employee){
+    if((employee.name !== req.body.name))
+      return res.status(400).send("that id is exiested with diffrant name.");
+  }
 
   employee = new Employee({
     id: req.body.id,
@@ -26,8 +38,10 @@ router.post("/", async (req, res) => {
     Cout: req.body.Cout,
   });
 
-  employee = await employee.save();
-  res.send(employee);
+
+    employee = await employee.save();
+    res.send(employee);
+
 });
 
 module.exports = router;

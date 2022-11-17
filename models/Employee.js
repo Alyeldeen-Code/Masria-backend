@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-const { join } = require("lodash");
 
 const Employee = mongoose.model(
   "Employees",
   new mongoose.Schema({
-    id: { type: Number, unique: true, required: true },
+    id: { type: Number, required: true },
     name: { type: String, required: true },
     Cin: { type: String, required: true },
     Cout: { type: String, required: true },
