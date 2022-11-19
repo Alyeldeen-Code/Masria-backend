@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Employees = require("./routes/employees");
 const User = require("./routes/user");
 const app = express();
-const db = mongoose.connect("mongodb://10.10.25.55/test", (error) => {
+const db = mongoose.connect("mongodb+srv://alyeldeen:alyeldeen2@masria.nqunjno.mongodb.net/?retryWrites=true&w=majority", (error) => {
   if (!error) console.log("db connected ......");
   else console.log(error);
 });
