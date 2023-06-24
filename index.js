@@ -1,18 +1,30 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const config = require("config");
 const Employees = require("./routes/employees");
 const User = require("./routes/user");
+const Auth = require("./routes/auth");
+
+if (!config.get("jwtPraivetKey")) {
+  console.error("FATAL ERROR: jwtPraivetKey is not defined.");
+  process.exit(1);
+}
+
 const app = express();
-const db = mongoose.connect("mongodb+srv://alyeldeen:alyeldeen2@masria.nqunjno.mongodb.net/?retryWrites=true&w=majority", (error) => {
-  if (!error) console.log("db connected ......");
-  else console.log(error);
-});
+const db = mongoose.connect(
+  "mongodb+srv://alyeldeen:alyeldeen2@masria.nqunjno.mongodb.net/?retryWrites=true&w=majority",
+  (error) => {
+    if (!error) console.log("db connected ......");
+    else console.log(error);
+  }
+);
 
 app.use(cors());
 app.use(express.json());
-app.use("/emplo", Employees);
-app.use("/user", User);
+app.use("/api/employee", Employees);
+app.use("/api/user", User);
+app.use("/api/auth", Auth);
 
 app.get("/", (req, res) => {
   res.send("Masria API.....");
