@@ -31,15 +31,17 @@ router.get("/:ID", auth, async (req, res) => {
 router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-
-  let employee = await Employee.findOne({ ID: req.body.ID });
+  let employee = await Employee.findOne({ ID: Number.parseInt(req.body.ID) });
+  console.log(req.body);
   if (employee) {
-    if (employee.name !== req.body.name)
-      return res.status(400).send("that ID is exiested with diffrant name.");
+    if (
+      employee.ID !== req.body.ID ||
+      employee.Department !== req.body.Department
+    )
+      return res.status(400).send("that ID is exiested .");
   }
-  console.log("SUBERMAN");
   employee = new Employee({
-    ID: req.body.ID,
+    ID: Number(req.body.ID),
     Emp_Name: req.body.Emp_Name,
     Department: req.body.Department,
     Position: req.body.Position,
@@ -47,6 +49,7 @@ router.post("/", auth, async (req, res) => {
   });
 
   employee = await employee.save();
+  console.log(employee);
   res.send(employee);
 });
 
