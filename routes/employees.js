@@ -3,7 +3,7 @@ const router = express.Router();
 const _ = require("lodash");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
-const { Employee, validate } = require("../models/employee");
+const { Employee, validate } = require("../models/Employee");
 
 router.get("/me", auth, async (req, res) => {
   const me = await Employee.findOne({ ID: req.user.ID });
