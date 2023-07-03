@@ -5,6 +5,7 @@ const config = require("config");
 const Employees = require("./routes/employees");
 const User = require("./routes/user");
 const Auth = require("./routes/auth");
+const Department = require("./routes/department");
 
 if (!config.get("jwtPraivetKey")) {
   console.error("FATAL ERROR: jwtPraivetKey is not defined.");
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/employee", Employees);
 app.use("/api/user", User);
 app.use("/api/auth", Auth);
+app.use("/api/department", Department);
 
 app.get("/", (req, res) => {
   res.send("Masria API.....");
