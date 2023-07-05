@@ -2,19 +2,25 @@ const express = require("express");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { User } = require("../models/user");
+const { Employee } = require("../models/employee");
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send("ID or password is Invalid.");
 
-  const user = await User.findOne({ ID: req.body.ID });
-  if (!user) return res.status(400).send("ID or password is Invalid.");
+  const employee = await Employee.findOne({ ID: req.body.ID });
+  if (!employee) return res.status(400).send("ID or password is Invalid.");
 
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  const validPassword = await bcrypt.compare(
+    req.body.password,
+    employee.password
+  );
   if (!validPassword) return res.status(400).send("ID or password is Invalid.");
 
-  const token = await user.generateAuthToken();
+  if (employee.State != "Active")
+    return res.status(403).send("This User is not Active Any More.");
+
+  const token = await employee.generateAuthToken();
   res.send(token);
 });
 

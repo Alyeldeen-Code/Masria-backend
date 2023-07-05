@@ -24,7 +24,7 @@ const db = mongoose.connect(
 app.use(cors());
 app.use(express.json());
 app.use("/api/employee", Employees);
-app.use("/api/user", User);
+// app.use("/api/user", User);
 app.use("/api/auth", Auth);
 app.use("/api/department", Department);
 

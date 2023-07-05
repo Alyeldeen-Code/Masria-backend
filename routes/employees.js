@@ -1,20 +1,40 @@
 const express = require("express");
-const router = express.Router();
 const _ = require("lodash");
+const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const { Employee, validate } = require("../models/employee");
 
+const router = express.Router();
+
 router.get("/me", auth, async (req, res) => {
   const me = await Employee.findOne({ ID: req.user.ID });
-  res.status(200).send(me);
+  res
+    .status(200)
+    .send(
+      _.pick(me, [
+        "ID",
+        "Emp_Name",
+        "Department",
+        "Position",
+        "State",
+        "isAdmin",
+      ])
+    );
 });
 
 router.get("/", auth, async (req, res) => {
   const employees = await Employee.find().sort("ID");
   res.send(
     employees.map((emp) => {
-      return _.pick(emp, ["ID", "Emp_Name", "Department", "Position", "State"]);
+      return _.pick(emp, [
+        "ID",
+        "Emp_Name",
+        "Department",
+        "Position",
+        "State",
+        "isAdmin",
+      ]);
     })
   );
 });
@@ -23,16 +43,32 @@ router.get("/:ID", auth, async (req, res) => {
   const employees = await Employee.find({ ID: req.params.ID }).sort("ID");
   res.send(
     employees.map((emp) => {
-      return _.pick(emp, ["ID", "Emp_Name", "Department", "Position", "State"]);
+      return _.pick(emp, [
+        "ID",
+        "Emp_Name",
+        "Department",
+        "Position",
+        "State",
+        "isAdmin",
+      ]);
     })
   );
 });
 
-router.post("/", auth, async (req, res) => {
-  const { error } = validate(req.body);
+router.post("/", [auth, admin], async (req, res) => {
+  const { error } = validate(
+    _.pick(req.body, [
+      "ID",
+      "Emp_Name",
+      "Department",
+      "Position",
+      "State",
+      "password",
+      "isAdmin",
+    ])
+  );
   if (error) return res.status(400).send(error.details[0].message);
   let employee = await Employee.findOne({ ID: Number.parseInt(req.body.ID) });
-  console.log(req.body);
   if (employee) {
     if (
       employee.ID !== req.body.ID ||
@@ -40,17 +76,34 @@ router.post("/", auth, async (req, res) => {
     )
       return res.status(400).send("that ID is exiested .");
   }
+
+  const salt = await bcrypt.genSalt(10);
+  const scret = await bcrypt.hash(req.body.password, salt);
+
   employee = new Employee({
-    ID: Number(req.body.ID),
-    Emp_Name: req.body.Emp_Name,
-    Department: req.body.Department,
-    Position: req.body.Position,
-    State: req.body.State,
+    ..._.pick(req.body, [
+      "ID",
+      "Emp_Name",
+      "Department",
+      "Position",
+      "State",
+      "password",
+      "isAdmin",
+    ]),
+    password: scret,
   });
 
-  employee = await employee.save();
-  console.log(employee);
-  res.send(employee);
+  await employee.save();
+  res.send(
+    _.pick(req.body, [
+      "ID",
+      "Emp_Name",
+      "Department",
+      "Position",
+      "State",
+      "isAdmin",
+    ])
+  );
 });
 
 router.delete("/:ID", [auth, admin], async (req, res) => {
