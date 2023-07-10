@@ -37,4 +37,12 @@ router.post("/", [auth, admin], async (req, res) => {
   res.status(200).send(department);
 });
 
+router.delete("/:_id", [auth, admin], async (req, res) => {
+  let department = await Department.findOneAndRemove({ _id: req.params?._id });
+  if (!department) {
+    return res.status(400).send("Bad Request.");
+  }
+  res.status(200).send("Department is Deleted.");
+});
+
 module.exports = router;
