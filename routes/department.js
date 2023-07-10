@@ -34,7 +34,7 @@ router.post("/", [auth, admin], async (req, res) => {
   department = new Department({ name: req.body.name });
   department = await department.save();
 
-  res.status(200).send(department.map(() => {}));
+  res.status(200).send(department);
 });
 
 module.exports = router;
