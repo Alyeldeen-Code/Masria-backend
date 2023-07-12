@@ -2,6 +2,20 @@ const mongoose = require("mongoose");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
+/*
+##number identefire:
+*0:not Allowed
+*1:Read
+*3:Read and Create
+*5:Read , Delete and Create
+
+##number Index identefie:
+*1:manage own user.
+*2:manage Employee.
+*3:manage Departments.
+*4:Show Department Complaints.
+*5:Show Department vecation Requests.
+*/
 
 const EmployeeSchema = new mongoose.Schema({
   ID: { type: Number, required: true, unique: true },
@@ -11,6 +25,7 @@ const EmployeeSchema = new mongoose.Schema({
   State: { type: String, required: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, required: true },
+  Roles: { type: String, required: true, default: "10000" },
 });
 
 EmployeeSchema.methods.generateAuthToken = async function () {
@@ -20,6 +35,7 @@ EmployeeSchema.methods.generateAuthToken = async function () {
       isAdmin: this.isAdmin,
       Position: this.Position,
       Department: this.Department,
+      Roles: this.Roles,
     },
     config.get("jwtPraivetKey")
   );
@@ -37,6 +53,7 @@ const validateEmplyee = (employee) => {
     State: Joi.string().required(),
     password: Joi.string().required(),
     isAdmin: Joi.boolean().required(),
+    Roles: Joi.string().max(5).required(),
   });
   return schema.validate(employee);
 };
