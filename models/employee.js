@@ -3,6 +3,7 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 /*
+==>Permissions Roles:
 ##number identefire:
 *0:not Allowed
 *1:Read
@@ -11,11 +12,15 @@ const config = require("config");
 
 ##number Index identefie:
 *1:manage own user.
-*2:manage Employee.
-*3:manage Departments.
-*4:Show Department Complaints.
-*5:Show Department vecation Requests.
+*2:manage own vecation.
+*3:mange own Complains.
+*4:manage Employee.
+*5:manage Departments.
+*6:manage Department Complains.
+*7:manage Department vecation Requests.
 */
+const NUMBER_OF_PERMISSIONS = 7;
+const DEFAULT_PERMISSION_VALUE = "1000000";
 
 const EmployeeSchema = new mongoose.Schema({
   ID: { type: Number, required: true, unique: true },
@@ -25,7 +30,7 @@ const EmployeeSchema = new mongoose.Schema({
   State: { type: String, required: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, required: true },
-  Roles: { type: String, required: true, default: "10000" },
+  Roles: { type: String, required: true, default: DEFAULT_PERMISSION_VALUE },
 });
 
 EmployeeSchema.methods.generateAuthToken = async function () {
@@ -53,7 +58,10 @@ const validateEmplyee = (employee) => {
     State: Joi.string().required(),
     password: Joi.string().required(),
     isAdmin: Joi.boolean().required(),
-    Roles: Joi.string().max(5).required(),
+    Roles: Joi.string()
+      .min(NUMBER_OF_PERMISSIONS)
+      .max(NUMBER_OF_PERMISSIONS)
+      .required(),
   });
   return schema.validate(employee);
 };
