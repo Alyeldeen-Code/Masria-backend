@@ -47,7 +47,7 @@ EmployeeSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-const Employee = mongoose.model("Employees", EmployeeSchema);
+const Employee = mongoose.model("Employee", EmployeeSchema);
 
 const validateEmplyee = (employee) => {
   const schema = Joi.object().keys({

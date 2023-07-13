@@ -3,9 +3,9 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const config = require("config");
 const Employees = require("./routes/employees");
-const User = require("./routes/user");
 const Auth = require("./routes/auth");
 const Department = require("./routes/department");
+const Vacation = require("./routes/vacation");
 
 if (!config.get("jwtPraivetKey")) {
   console.error("FATAL ERROR: jwtPraivetKey is not defined.");
@@ -24,7 +24,7 @@ const db = mongoose.connect(
 app.use(cors());
 app.use(express.json());
 app.use("/api/employee", Employees);
-// app.use("/api/user", User);
+app.use("/api/vacation", Vacation);
 app.use("/api/auth", Auth);
 app.use("/api/department", Department);
 
