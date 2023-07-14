@@ -36,6 +36,7 @@ const EmployeeSchema = new mongoose.Schema({
 EmployeeSchema.methods.generateAuthToken = async function () {
   const token = jwt.sign(
     {
+      _id: this._id,
       ID: this.ID,
       isAdmin: this.isAdmin,
       Position: this.Position,
