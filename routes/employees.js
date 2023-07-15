@@ -39,6 +39,18 @@ router.get("/", auth, async (req, res) => {
   );
 });
 
+router.get("/department", auth, async (req, res) => {
+  const employees = await Employee.find({
+    Department: req.user.Department,
+    _id: { $ne: req.user._id },
+  }).sort("Emp_Name");
+  res.send(
+    employees.map((emp) => {
+      return _.pick(emp, ["_id", "Emp_Name"]);
+    })
+  );
+});
+
 router.get("/:ID", auth, async (req, res) => {
   const employees = await Employee.find({ ID: req.params.ID }).sort("ID");
   res.send(

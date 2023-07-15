@@ -39,7 +39,7 @@ router.post("/", [auth], async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let vacation = await Vacation.findOne({
-    start_data: req.body.start_data,
+    start_date: req.body.start_date,
   }).populate("employee");
 
   if (vacation) {
@@ -50,15 +50,15 @@ router.post("/", [auth], async (req, res) => {
   vacation = new Vacation({
     department: req.body.department,
     employee: req.body.employee,
-    start_data: new Date(
-      new Date(req.body.start_data).getTime() + 2 * 60 * 60 * 1000
+    start_date: new Date(
+      new Date(req.body.start_date).getTime() + 2 * 60 * 60 * 1000
     ).toISOString(),
-    end_data: new Date(
-      new Date(req.body.end_data).getTime() + 2 * 60 * 60 * 1000
+    end_date: new Date(
+      new Date(req.body.end_date).getTime() + 2 * 60 * 60 * 1000
     ).toISOString(),
     days: req.body.days,
     reason: req.body.reason,
-    describtion: req.body.describtion,
+    description: req.body.description,
     responsible_employee: req.body.responsible_employee,
     manager_res: req.body.manager_res,
     hr_res: req.body.hr_res,

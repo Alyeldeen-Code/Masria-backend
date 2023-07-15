@@ -8,11 +8,11 @@ const VacationSchema = new mongoose.Schema({
     ref: "Employee",
     required: true,
   },
-  start_data: { type: Date, required: true },
-  end_data: { type: Date, required: true },
+  start_date: { type: Date, required: true },
+  end_date: { type: Date, required: true },
   days: { type: Number, required: true },
   reason: { type: String, require: true },
-  describtion: { type: String, require: true },
+  description: { type: String, require: true },
   responsible_employee: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Employee",
@@ -28,11 +28,11 @@ const validateVacation = (vacation) => {
   const schema = Joi.object().keys({
     department: Joi.string().required(),
     employee: Joi.string().required(),
-    start_data: Joi.date().required(),
-    end_data: Joi.date().required(),
+    start_date: Joi.date().required(),
+    end_date: Joi.date().required(),
     days: Joi.number().required(),
     reason: Joi.valid("regular", "emergency", "exceptional", "Sick").required(),
-    describtion: Joi.string().optional(),
+    description: Joi.string().optional(),
     responsible_employee: Joi.string().required(),
     manager_res: Joi.valid("accepted", "refused", "processing")
       .required()
