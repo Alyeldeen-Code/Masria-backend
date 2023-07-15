@@ -18,8 +18,8 @@ const VacationSchema = new mongoose.Schema({
     ref: "Employee",
     required: true,
   },
-  manager_res: { type: String, required: true },
-  hr_res: { type: String, required: true },
+  manager_res: { type: String, required: true, default: "processing" },
+  hr_res: { type: String, required: true, default: "processing" },
 });
 
 const Vacation = mongoose.model("Vacation", VacationSchema);
@@ -34,12 +34,12 @@ const validateVacation = (vacation) => {
     reason: Joi.valid("regular", "emergency", "exceptional", "Sick").required(),
     description: Joi.string().optional(),
     responsible_employee: Joi.string().required(),
-    manager_res: Joi.valid("accepted", "refused", "processing")
-      .required()
-      .default("processing"),
-    hr_res: Joi.valid("accepted", "refused", "processing")
-      .required()
-      .default("processing"),
+    manager_res: Joi.valid("accepted", "refused", "processing").default(
+      "processing"
+    ),
+    hr_res: Joi.valid("accepted", "refused", "processing").default(
+      "processing"
+    ),
   });
   return schema.validate(vacation);
 };

@@ -2,7 +2,6 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const { Vacation, validate } = require("../models/vacatoin");
-const send = require("send");
 
 const router = express.Router();
 
