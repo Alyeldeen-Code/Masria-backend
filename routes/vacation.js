@@ -36,9 +36,17 @@ router.get("/department", [auth], async (req, res) => {
 router.post("/", [auth], async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+  const start_date =
+    new Date(req.body.start_date).getTime() + 2 * 60 * 60 * 1000;
+  const end_date = new Date(req.body.end_date).getTime() + 2 * 60 * 60 * 1000;
 
   let vacation = await Vacation.findOne({
-    start_date: req.body.start_date,
+    $or: [
+      {
+        start_date: start_date,
+      },
+      { end_date: end_date },
+    ],
   }).populate("employee");
 
   if (vacation) {
@@ -49,12 +57,8 @@ router.post("/", [auth], async (req, res) => {
   vacation = new Vacation({
     department: req.body.department,
     employee: req.body.employee,
-    start_date: new Date(
-      new Date(req.body.start_date).getTime() + 2 * 60 * 60 * 1000
-    ).toISOString(),
-    end_date: new Date(
-      new Date(req.body.end_date).getTime() + 2 * 60 * 60 * 1000
-    ).toISOString(),
+    start_date: new Date(start_date).toISOString(),
+    end_date: new Date(end_date).toISOString(),
     days: req.body.days,
     reason: req.body.reason,
     description: req.body.description,
