@@ -76,19 +76,19 @@ router.put("/", [auth], (req, res) => {
   res.send("put vication");
 });
 
-router.delete("/:_id", [auth], async (req, res) => {
+router.delete("/:id", [auth], async (req, res) => {
   //find
-  let vacation = await Vacation.findById(req.params?._id).populate(
+  console.log(req.params?.id);
+  let vacation = await Vacation.findById(req.params.id).populate(
     "employee",
     "Emp_Name"
   );
   //check
-  console.log(vacation);
   if (!vacation.employee)
     return res.status(400).send("there is no vcation match.");
   if (vacation.employee._id.equals(req.user._id)) {
     //delete
-    vacation = await Vacation.deleteOne({ _id: req.params?._id });
+    vacation = await Vacation.deleteOne({ _id: req.params?.id });
     res.status(200).send("Deleted.");
   } else {
     //not Allowed

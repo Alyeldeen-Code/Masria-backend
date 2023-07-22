@@ -34,10 +34,10 @@ const validateVacation = (vacation) => {
     reason: Joi.valid("regular", "emergency", "exceptional", "Sick").required(),
     description: Joi.string().optional(),
     responsible_employee: Joi.string().required(),
-    manager_res: Joi.valid("accepted", "refused", "processing").default(
+    manager_res: Joi.valid("accepted", "rejected", "processing").default(
       "processing"
     ),
-    hr_res: Joi.valid("accepted", "refused", "processing").default(
+    hr_res: Joi.valid("accepted", "rejected", "processing").default(
       "processing"
     ),
   });
