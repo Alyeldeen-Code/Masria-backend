@@ -51,7 +51,7 @@ router.post("/", [auth], async (req, res) => {
   }).populate("employee");
 
   if (vacation) {
-    if ((vacation.employee._id = req.body.employee))
+    if (vacation.employee._id === req.body.employee)
       return res.status(400).send("that vacation is arrdy sended.");
   }
 
