@@ -2,6 +2,7 @@ const express = require("express");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const { Vacation, validate } = require("../models/vacatoin");
+const { date } = require("joi");
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get("/all", [auth, admin], async (req, res) => {
 
 //GET DEPARTMENT
 router.get("/department", [auth], async (req, res) => {
-  if (req.user.position != "Maneger" && !req.user.isAdmin)
+  if (req.user.position != "Manager" && !req.user.isAdmin)
     return res.status(403).send("you are not Auth to get that data.");
   const vacations = await Vacation.find({ department: req.user.Department })
     .populate("employee", "Emp_Name ")
@@ -72,10 +73,37 @@ router.post("/", [auth], async (req, res) => {
 });
 
 //UPDATE
-router.put("/", [auth], (req, res) => {
-  res.send("put vication");
+router.put("/response/:id", [auth], async (req, res) => {
+  const position = req.user.Position;
+
+  if (position != "Manager" && position != "HR") {
+    return res.status(403).send("You are not Allowed.");
+  }
+
+  if (!(req.body.manager_res || req.body.hr_res))
+    return res.status(400).send("There is no valid data.");
+
+  const vacation = await Vacation.findById(req.params.id).populate(
+    "employee",
+    "Department"
+  );
+
+  if (!vacation)
+    return res.status(404).send("There is No Vacation with that id.");
+  if (
+    vacation.employee.Department != req.user.Department &&
+    position === "HR"
+  ) {
+    return res.status(403).send("You are not Allowed.");
+  }
+
+  //TODO: Validate data.
+
+  await vacation.updateOne(req.body);
+  res.send(`Vacation ${req.body.manager_res || req.body.hr_res}`);
 });
 
+//DELETE
 router.delete("/:id", [auth], async (req, res) => {
   //find
   console.log(req.params?.id);
