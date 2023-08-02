@@ -8,6 +8,9 @@ const router = express.Router();
 
 //GET ME
 router.get("/", [auth], async (req, res) => {
+  if (!req.Roles.ManageOwnVecation.read)
+    return res.status(403).send("You are not Allowed.");
+
   const vacations = await Vacation.find({ employee: req.user._id })
     .populate("employee", "Emp_Name ")
     .populate("responsible_employee", "Emp_Name");
@@ -16,7 +19,10 @@ router.get("/", [auth], async (req, res) => {
 });
 
 //GET ALL
-router.get("/all", [auth, admin], async (req, res) => {
+router.get("/all", [auth], async (req, res) => {
+  if (!(req.user.Position === "HR"))
+    return res.status(403).send("You are not Allowed.");
+
   const vacations = await Vacation.find()
     .populate("employee", "Emp_Name ")
     .populate("responsible_employee", "Emp_Name");
